@@ -19,11 +19,11 @@ namespace FileUploadTask
             var me = await graphClient.Me.GetAsync();
             Console.WriteLine($"Signed in as: {me!.DisplayName}");
 
-            DriveItem folder = await FileManagementService.CreateOrGetFolder(graphClient, "Myname");
 
             var drive = await graphClient.Me.Drive.GetAsync();
             var userDriveId = drive!.Id!;
 
+            DriveItem folder = await FileManagementService.CreateOrGetFolder(graphClient, userDriveId, "Myname");
 
             if (folder != null)
             {

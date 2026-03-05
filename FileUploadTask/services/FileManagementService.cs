@@ -12,12 +12,9 @@ namespace FileUploadTask
 {
     class FileManagementService
     {
-        public static async Task<DriveItem> CreateOrGetFolder(GraphServiceClient graphClient, string folderName)
+        public static async Task<DriveItem> CreateOrGetFolder(GraphServiceClient graphClient, string userDriveId, string folderName)
         {
             //SCENARIO 1: the folder already exists and we just return it
-            var drive = await graphClient.Me.Drive.GetAsync();
-            var userDriveId = drive.Id;
-
             var children = await graphClient.Drives[userDriveId].Items["root"].Children.GetAsync();
 
             var existingFolder = children.Value.FirstOrDefault(i => i.Name == folderName);
