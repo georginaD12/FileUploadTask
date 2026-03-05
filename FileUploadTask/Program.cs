@@ -1,12 +1,7 @@
-﻿using Microsoft.Graph;
-
-using System;
-
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Graph.Models;
-using System.Collections.Generic;
 using System.Linq;
-
 
 namespace FileUploadTask
 {
@@ -39,8 +34,6 @@ namespace FileUploadTask
             {
                 Console.WriteLine("The hash codes are the same");
             }
-
         }
-
     }
 }
