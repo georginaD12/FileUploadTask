@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Graph.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace FileUploadTask
@@ -31,6 +32,13 @@ namespace FileUploadTask
 
             var downloadFileRes = await FileManagementService.DownloadFile(graphClient, userDriveId, folder.Id, "fileForUpload.txt", "/Users/georgina/Downloads/fileForUpload.txt");
 
+            var sha1 = FileManagementService.ComputeSHA256("/Users/georgina/Desktop/FileUploadTask/FileUploadTask/fileForUpload.txt");
+            var sha2 = FileManagementService.ComputeSHA256("/Users/georgina/Downloads/fileForUpload.txt");
+
+            if (sha1.SequenceEqual(sha2))
+            {
+                Console.WriteLine("The hash codes are the same");
+            }
 
         }
 

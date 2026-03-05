@@ -6,6 +6,8 @@ using Microsoft.Graph.Models.ODataErrors;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+
 namespace FileUploadTask
 {
     class FileManagementService
@@ -85,7 +87,7 @@ namespace FileUploadTask
         }
 
 
-        public static async Task<bool> DownloadFile(GraphServiceClient graphClient, string userDriveId,string folderId, string fileName, string downloadPath)
+        public static async Task<bool> DownloadFile(GraphServiceClient graphClient, string userDriveId, string folderId, string fileName, string downloadPath)
         {
             try
             {
@@ -110,6 +112,14 @@ namespace FileUploadTask
                 Console.WriteLine($"Unexpected Error: {ex.Message}");
                 return false;
             }
+        }
+
+        public static byte[] ComputeSHA256(string filePath)
+        {
+            using var sha256 = SHA256.Create();
+            using var stream = File.OpenRead(filePath);
+            var res = sha256.ComputeHash(stream);
+            return res;
         }
 
     }
