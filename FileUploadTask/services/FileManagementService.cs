@@ -5,11 +5,12 @@ using System;
 using Microsoft.Graph.Models.ODataErrors;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 namespace FileUploadTask
 {
     class FileManagementService
     {
-        public static async Task<DriveItem?> CreateOrGetFolder(GraphServiceClient graphClient, string folderName)
+        public static async Task<DriveItem> CreateOrGetFolder(GraphServiceClient graphClient, string folderName)
         {
             //SCENARIO 1: the folder already exists and we just return it
             var drive = await graphClient.Me.Drive.GetAsync();
@@ -43,6 +44,32 @@ namespace FileUploadTask
                 var result = await graphClient.Drives[userDriveId].Items["root"].Children.PostAsync(requestBody);
                 Console.WriteLine($"Folder created: {result.Name}");
                 return result;
+            }
+            catch (ODataError odataError)
+            {
+                Console.WriteLine($"OData Error Message: {odataError.Error?.Message}");
+                Console.WriteLine($"OData Error Code: {odataError.Error?.Code}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
+                return null;
+            }
+        }
+
+        public static async Task<DriveItem> UploadFile(GraphServiceClient graphClient, string userDriveId, string folderId, string filePath)
+        {
+            string fileName = Path.GetFileName(filePath);
+
+            using var fileStream = File.OpenRead(filePath);
+
+            try
+            {
+                //try to upload the file, if it already exists, override it
+                var uploadedFile = await graphClient.Drives[userDriveId].Items[folderId].ItemWithPath(fileName).Content.PutAsync(fileStream);
+                Console.WriteLine($"File uploaded: {uploadedFile.Name}");
+                return uploadedFile;
             }
             catch (ODataError odataError)
             {

@@ -20,7 +20,16 @@ namespace FileUploadTask
 
             DriveItem folder = await FileManagementService.CreateOrGetFolder(graphClient, "Myname");
 
-         }
+            var drive = await graphClient.Me.Drive.GetAsync();
+            var userDriveId = drive!.Id!;
+
+
+            if (folder != null)
+            {
+                await FileManagementService.UploadFile(graphClient, userDriveId, folder.Id!, "/Users/georgina/Desktop/FileUploadTask/FileUploadTask/fileForUpload.txt");
+            }
+
+        }
 
     }
 }
