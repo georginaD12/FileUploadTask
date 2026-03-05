@@ -29,6 +29,9 @@ namespace FileUploadTask
                 await FileManagementService.UploadFile(graphClient, userDriveId, folder.Id!, "/Users/georgina/Desktop/FileUploadTask/FileUploadTask/fileForUpload.txt");
             }
 
+            var downloadFileRes = await FileManagementService.DownloadFile(graphClient, userDriveId, folder.Id, "fileForUpload.txt", "/Users/georgina/Downloads/fileForUpload.txt");
+
+
         }
 
     }

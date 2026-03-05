@@ -83,5 +83,34 @@ namespace FileUploadTask
                 return null;
             }
         }
+
+
+        public static async Task<bool> DownloadFile(GraphServiceClient graphClient, string userDriveId,string folderId, string fileName, string downloadPath)
+        {
+            try
+            {
+                var fileContent = await graphClient.Drives[userDriveId].Items[folderId].ItemWithPath(fileName).Content.GetAsync();
+
+                using (var fileStream = new FileStream(downloadPath, FileMode.Create, FileAccess.Write))
+                {
+                    await fileContent.CopyToAsync(fileStream);
+                }
+
+                Console.WriteLine($"File downloaded to: {downloadPath}");
+                return true;
+            }
+            catch (ODataError odataError)
+            {
+                Console.WriteLine($"OData Error Message: {odataError.Error?.Message}");
+                Console.WriteLine($"OData Error Code: {odataError.Error?.Code}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }
